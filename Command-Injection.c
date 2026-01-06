@@ -23,10 +23,12 @@ int main() {
     char filename[100];
 
     printf("請輸入要顯示內容的檔案名稱：");
-    if (scanf("%99s", filename) != 1) {
+    if (fgets(filename, sizeof(filename), stdin) == NULL) {
         printf("輸入錯誤。\n");
         return 1;
     }
+    // 移除尾端換行字元
+    filename[strcspn(filename, "\r\n")] = '\0';
 
     if (!is_valid_filename(filename)) {
         printf("檔案名稱包含非法字元。\n");
