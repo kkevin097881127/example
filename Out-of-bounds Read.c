@@ -1,6 +1,8 @@
+#include <windows.h>
 #include <stdio.h>
 
 int main() {
+    SetConsoleOutputCP(65001); 
     int arr[5] = {10, 20, 30, 40, 50};
     int index;
 
