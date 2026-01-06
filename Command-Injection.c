@@ -1,16 +1,49 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int is_valid_filename(const char *filename) {
+    // 僅允許英數字、-、_、.，且不允許目錄分隔符
+    for (int i = 0; filename[i] != '\0'; i++) {
+        if (!isalnum((unsigned char)filename[i]) &&
+            filename[i] != '-' &&
+            filename[i] != '_' &&
+            filename[i] != '.') {
+            return 0;
+        }
+    }
+    // 不允許目錄分隔符
+    if (strchr(filename, '/') != NULL || strchr(filename, '\\') != NULL) {
+        return 0;
+    }
+    return 1;
+}
 
 int main() {
     char filename[100];
 
     printf("請輸入要顯示內容的檔案名稱：");
-    scanf("%99s", filename);
+    if (scanf("%99s", filename) != 1) {
+        printf("輸入錯誤。\n");
+        return 1;
+    }
 
-    // 潛在命令注入漏洞：使用者輸入直接拼接到系統指令
-    char cmd[120];
-    sprintf(cmd, "type %s", filename); // Windows 下用 type；Linux 下請改用 cat
+    if (!is_valid_filename(filename)) {
+        printf("檔案名稱包含非法字元。\n");
+        return 1;
+    }
 
-    system(cmd); // 直接執行，使用者可注入惡意指令
+    FILE *fp = fopen(filename, "r");
+    if (!fp) {
+        printf("檔案無法開啟或不存在。\n");
+        return 1;
+    }
+
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        printf("%s", buffer);
+    }
+
+    fclose(fp);
     return 0;
 }
