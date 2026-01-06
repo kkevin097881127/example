@@ -10,15 +10,16 @@ int main() {
 
     if (choice == 1) {
         ptr = (int *)malloc(sizeof(int));
+        if (ptr == NULL) {
+            printf("記憶體分配失敗！\n");
+            return 1;
+        }
+        *ptr = 123;
+        printf("你輸入的數值是：%d\n", *ptr);
+        free(ptr);
+    } else {
+        printf("未分配記憶體，指標不可使用。\n");
     }
-    // 如果使用者輸入非 1，ptr 仍為 NULL
-
-    // 直接解引用 ptr，使用者輸入非 1 時會造成 NULL Pointer Dereference
-    *ptr = 123;
-    printf("你輸入的數值是：%d\n", *ptr);
-
-    // 釋放記憶體（僅當有分配時有效）
-    free(ptr);
 
     return 0;
 }
